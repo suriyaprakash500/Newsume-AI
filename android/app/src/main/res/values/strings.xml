@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Newsume AI</string>
+    <string name="tab_resume">Resume</string>
+    <string name="tab_news">News</string>
+    <string name="tab_digest">Digest</string>
+    <string name="tab_profile">Profile</string>
+    <string name="upload_resume">Upload Resume</string>
+    <string name="reupload_resume">Update Resume</string>
+    <string name="no_news_yet">No personalized news yet. Upload your resume to get started!</string>
+    <string name="refreshing">Refreshing news…</string>
+    <string name="notification_channel_name">Daily News</string>
+    <string name="notification_channel_desc">Daily personalized tech news based on your resume</string>
+    <string name="splash_title">Newsume AI</string>
+    <string name="splash_tagline">An AI that reads your resume and delivers personalized news</string>
+</resources>
