@@ -16,7 +16,7 @@ sudo apt-get install -y -qq python3 python3-pip python3-venv git
 
 # 2. Create virtual environment
 echo "[2/6] Setting up Python virtual environment..."
-cd ~/Newsume_AI/backend
+cd ~/Newsume-AI/backend
 python3 -m venv .venv
 source .venv/bin/activate
 
@@ -30,7 +30,7 @@ echo "[4/6] Checking .env file..."
 if [ ! -f .env ]; then
     cp .env.example .env
     echo "  ⚠️  Created .env from template. Edit it with your API keys:"
-    echo "     nano ~/Newsume_AI/backend/.env"
+    echo "     nano ~/Newsume-AI/backend/.env"
 else
     echo "  ✓ .env already exists"
 fi
@@ -45,9 +45,9 @@ After=network.target
 [Service]
 Type=simple
 User=$USER
-WorkingDirectory=/home/$USER/Newsume_AI/backend
-Environment=PATH=/home/$USER/Newsume_AI/backend/.venv/bin:/usr/bin
-ExecStart=/home/$USER/Newsume_AI/backend/.venv/bin/python main.py
+WorkingDirectory=/home/$USER/Newsume-AI/backend
+Environment=PATH=/home/$USER/Newsume-AI/backend/.venv/bin:/usr/bin
+ExecStart=/home/$USER/Newsume-AI/backend/.venv/bin/python main.py
 Restart=always
 RestartSec=5
 
@@ -74,7 +74,7 @@ echo "  Check status:       sudo systemctl status newsume-api"
 echo "  View logs:          sudo journalctl -u newsume-api -f"
 echo ""
 echo "  ⚠️  Don't forget to:"
-echo "  1. Edit .env with your GROQ_API_KEY: nano ~/Newsume_AI/backend/.env"
+echo "  1. Edit .env with your GROQ_API_KEY: nano ~/Newsume-AI/backend/.env"
 echo "  2. Open port 8000 in GCP Firewall Rules (VPC Network → Firewall)"
 echo "     gcloud compute firewall-rules create allow-newsume-8000 \\"
 echo "       --allow tcp:8000 --source-ranges 0.0.0.0/0 --target-tags http-server"
