@@ -98,18 +98,22 @@ fun NewsScreen(viewModel: NewsViewModel = viewModel()) {
             }
         }
     ) { padding ->
-        if (articles.isEmpty() && !uiState.isRefreshing) {
-            if (uiState.isCaughtUp) {
-                CaughtUpState(modifier = Modifier.padding(padding))
+        PullToRefreshBox(
+            isRefreshing = uiState.isRefreshing,
+            onRefresh = { viewModel.refreshNews() },
+            modifier = Modifier.padding(padding).fillMaxSize()
+        ) {
+            if (articles.isEmpty()) {
+                LazyColumn(modifier = Modifier.fillMaxSize()) {
+                    item {
+                        if (uiState.isCaughtUp) {
+                            CaughtUpState(modifier = Modifier.fillParentMaxSize())
+                        } else {
+                            EmptyNewsState(modifier = Modifier.fillParentMaxSize())
+                        }
+                    }
+                }
             } else {
-                EmptyNewsState(modifier = Modifier.padding(padding))
-            }
-        } else {
-            PullToRefreshBox(
-                isRefreshing = uiState.isRefreshing,
-                onRefresh = { viewModel.refreshNews() },
-                modifier = Modifier.padding(padding)
-            ) {
                 LazyColumn(
                     state = listState,
                     modifier = Modifier.fillMaxSize(),
