@@ -9,6 +9,7 @@ from sqlalchemy.orm import Session
 from database import get_db
 from services.resume_parser import process_resume
 from repositories.user_profile_repo import get_profile_by_device, update_fcm_token, upsert_profile
+from repositories.news_repo import mark_all_unread_as_read
 
 router = APIRouter(prefix="/resume", tags=["Resume"])
 
@@ -88,6 +89,7 @@ def edit_profile(device_id: str, body: EditProfileRequest, db: Session = Depends
         raise HTTPException(status_code=400, detail="No fields to update.")
 
     profile = upsert_profile(db, device_id, update_data)
+    mark_all_unread_as_read(db, device_id)
     return {"status": "success", "profile": _serialize_profile(profile)}
 
 

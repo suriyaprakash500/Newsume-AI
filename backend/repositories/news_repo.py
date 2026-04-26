@@ -80,6 +80,12 @@ def mark_articles_read(db: Session, device_id: str, article_ids: list[int]):
     db.commit()
 
 
+def mark_all_unread_as_read(db: Session, device_id: str):
+    unread = get_unread_articles(db, device_id, limit=1000)
+    if unread:
+        mark_articles_read(db, device_id, [a.id for a in unread])
+
+
 def get_unread_count(db: Session, device_id: str) -> int:
     read_ids_subq = (
         db.query(ArticleReadState.article_id)
