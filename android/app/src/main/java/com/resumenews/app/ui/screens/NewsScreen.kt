@@ -75,20 +75,7 @@ fun NewsScreen(viewModel: NewsViewModel = viewModel()) {
         }
     }
 
-    val visibleIds by remember {
-        derivedStateOf {
-            val info = listState.layoutInfo
-            info.visibleItemsInfo.mapNotNull { vi ->
-                articles.getOrNull(vi.index)?.id
-            }
-        }
-    }
 
-    LaunchedEffect(visibleIds) {
-        if (visibleIds.isNotEmpty()) {
-            viewModel.markRead(visibleIds)
-        }
-    }
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
@@ -124,6 +111,7 @@ fun NewsScreen(viewModel: NewsViewModel = viewModel()) {
                         NewsArticleCard(
                             article = article,
                             onClick = {
+                                viewModel.markRead(listOf(article.id))
                                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(article.url))
                                 context.startActivity(intent)
                             },
