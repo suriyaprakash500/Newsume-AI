@@ -2,6 +2,7 @@ package com.resumenews.app.ui.screens
 
 import android.content.Intent
 import android.net.Uri
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -112,8 +113,8 @@ fun NewsScreen(viewModel: NewsViewModel = viewModel()) {
                             article = article,
                             onClick = {
                                 viewModel.markRead(listOf(article.id))
-                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(article.url))
-                                context.startActivity(intent)
+                                val customTabsIntent = CustomTabsIntent.Builder().build()
+                                customTabsIntent.launchUrl(context, Uri.parse(article.url))
                             },
                             onBookmark = { viewModel.toggleBookmark(article.id) }
                         )
