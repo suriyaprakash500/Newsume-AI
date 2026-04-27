@@ -3,6 +3,7 @@ package com.resumenews.app.ui.navigation
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AutoAwesome
+import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.Newspaper
 import androidx.compose.material.icons.filled.Person
@@ -22,6 +23,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.resumenews.app.ui.screens.BookmarksScreen
 import com.resumenews.app.ui.screens.DigestScreen
 import com.resumenews.app.ui.screens.NewsScreen
 import com.resumenews.app.ui.screens.ProfileScreen
@@ -32,10 +34,11 @@ sealed class Screen(val route: String, val label: String, val icon: ImageVector)
     data object Resume : Screen("resume", "Resume", Icons.Filled.Description)
     data object News : Screen("news", "News", Icons.Filled.Newspaper)
     data object Digest : Screen("digest", "Digest", Icons.Filled.AutoAwesome)
+    data object Bookmarks : Screen("bookmarks", "Saved", Icons.Filled.Bookmark)
     data object Profile : Screen("profile", "Profile", Icons.Filled.Person)
 }
 
-private val tabs = listOf(Screen.Resume, Screen.News, Screen.Digest, Screen.Profile)
+private val tabs = listOf(Screen.Resume, Screen.News, Screen.Digest, Screen.Bookmarks, Screen.Profile)
 
 @Composable
 fun AppNavigation() {
@@ -86,6 +89,9 @@ fun AppNavigation() {
             }
             composable(Screen.Digest.route) {
                 DigestScreen(viewModel = newsViewModel)
+            }
+            composable(Screen.Bookmarks.route) {
+                BookmarksScreen(viewModel = newsViewModel)
             }
             composable(Screen.Profile.route) {
                 ProfileScreen()

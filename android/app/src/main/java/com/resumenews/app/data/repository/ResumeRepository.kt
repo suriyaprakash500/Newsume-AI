@@ -64,6 +64,10 @@ class ResumeRepository(context: Context) {
         AppDatabase.getInstance(context).clearAllTables()
     }
 
+    suspend fun getSkillGapReport(deviceId: String): com.resumenews.app.data.remote.dto.SkillGapReport {
+        return api.getSkillGapReport(deviceId).report
+    }
+
     private fun ProfileDto.toEntity() = UserProfileEntity(
         deviceId = deviceId,
         name = name,

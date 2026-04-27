@@ -22,7 +22,9 @@ data class ResumeUiState(
     val saveSuccess: Boolean = false,
     val error: String? = null,
     val lastUploadedProfile: ProfileDto? = null,
-    val isDeleting: Boolean = false
+    val isDeleting: Boolean = false,
+    val skillGapReport: com.resumenews.app.data.remote.dto.SkillGapReport? = null,
+    val isLoadingSkillGap: Boolean = false
 )
 
 class ResumeViewModel(application: Application) : AndroidViewModel(application) {
@@ -94,6 +96,24 @@ class ResumeViewModel(application: Application) : AndroidViewModel(application) 
                 _uiState.value = _uiState.value.copy(
                     isDeleting = false,
                     error = e.message ?: "Delete failed"
+                )
+            }
+        }
+    }
+
+    fun fetchSkillGapReport() {
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(isLoadingSkillGap = true, error = null)
+            try {
+                val report = repo.getSkillGapReport(deviceId)
+                _uiState.value = _uiState.value.copy(
+                    isLoadingSkillGap = false,
+                    skillGapReport = report
+                )
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(
+                    isLoadingSkillGap = false,
+                    error = e.message ?: "Failed to fetch skill gap report"
                 )
             }
         }

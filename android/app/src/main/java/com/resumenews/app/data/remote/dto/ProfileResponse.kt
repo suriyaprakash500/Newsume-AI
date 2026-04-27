@@ -24,3 +24,15 @@ data class EditProfileBody(
     val certifications: List<String>? = null,
     val keywords: List<String>? = null,
 )
+
+data class SkillGapReport(
+    @SerializedName("trending_skills") val trendingSkills: List<String> = emptyList(),
+    @SerializedName("missing_skills") val missingSkills: List<String> = emptyList(),
+    val recommendation: String = "",
+    @SerializedName("resume_suggestions") val resumeSuggestions: List<String> = emptyList()
+)
+
+data class SkillGapResponse(
+    val status: String = "",
+    val report: SkillGapReport = SkillGapReport()
+)

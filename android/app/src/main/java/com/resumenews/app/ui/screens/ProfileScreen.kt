@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Save
@@ -151,6 +152,14 @@ fun ProfileScreen(viewModel: ResumeViewModel = viewModel()) {
                 }
                 Text("Save Profile")
             }
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            SkillGapSection(
+                report = uiState.skillGapReport,
+                isLoading = uiState.isLoadingSkillGap,
+                onFetch = { viewModel.fetchSkillGapReport() }
+            )
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -322,5 +331,71 @@ private fun parseList(gson: Gson, json: String): List<String> {
         gson.fromJson(json, Array<String>::class.java).toList()
     } catch (_: Exception) {
         emptyList()
+    }
+}
+
+@Composable
+private fun SkillGapSection(
+    report: com.resumenews.app.data.remote.dto.SkillGapReport?,
+    isLoading: Boolean,
+    onFetch: () -> Unit
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer
+        )
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(
+                "AI Skill-Gap Report",
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.onPrimaryContainer
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                "Compare your resume against trending tech news to find what you're missing.",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f)
+            )
+            
+            Spacer(modifier = Modifier.height(16.dp))
+
+            if (isLoading) {
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
+            } else if (report == null) {
+                Button(
+                    onClick = onFetch,
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                ) {
+                    Icon(Icons.Filled.AutoAwesome, contentDescription = null, modifier = Modifier.size(18.dp))
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text("Generate Report")
+                }
+            } else {
+                Text("Recommendation", style = MaterialTheme.typography.titleMedium)
+                Text(report.recommendation, style = MaterialTheme.typography.bodyMedium)
+                
+                Spacer(modifier = Modifier.height(8.dp))
+                
+                Text("Missing Skills (Market Demand)", style = MaterialTheme.typography.titleMedium)
+                Text(report.missingSkills.joinToString(", "), style = MaterialTheme.typography.bodyMedium)
+                
+                Spacer(modifier = Modifier.height(8.dp))
+                
+                Text("Resume Suggestions", style = MaterialTheme.typography.titleMedium)
+                report.resumeSuggestions.forEach {
+                    Text("• $it", style = MaterialTheme.typography.bodyMedium)
+                }
+                
+                Spacer(modifier = Modifier.height(16.dp))
+                Button(
+                    onClick = onFetch,
+                    modifier = Modifier.align(Alignment.End)
+                ) {
+                    Text("Refresh Report")
+                }
+            }
+        }
     }
 }

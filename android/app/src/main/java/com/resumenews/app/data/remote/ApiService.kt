@@ -45,6 +45,11 @@ interface ApiService {
         @Path("device_id") deviceId: String,
     ): Map<String, Any>
 
+    @GET("preferences/{device_id}/skill-gap")
+    suspend fun getSkillGapReport(
+        @Path("device_id") deviceId: String,
+    ): com.resumenews.app.data.remote.dto.SkillGapResponse
+
     @GET("news/{device_id}")
     suspend fun getNewsUnread(
         @Path("device_id") deviceId: String,

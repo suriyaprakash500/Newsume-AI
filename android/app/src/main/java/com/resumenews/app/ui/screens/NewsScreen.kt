@@ -126,7 +126,7 @@ fun NewsScreen(viewModel: NewsViewModel = viewModel()) {
 }
 
 @Composable
-private fun NewsArticleCard(
+fun NewsArticleCard(
     article: NewsArticleEntity,
     onClick: () -> Unit,
     onBookmark: () -> Unit
