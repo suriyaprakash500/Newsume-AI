@@ -68,6 +68,25 @@ class ResumeRepository(context: Context) {
         return api.getSkillGapReport(deviceId).report
     }
 
+    suspend fun getPreferences(deviceId: String): com.resumenews.app.data.remote.dto.PreferencesDto {
+        return api.getPreferences(deviceId)
+    }
+
+    suspend fun updatePreferences(
+        deviceId: String,
+        preferredTopics: List<String>? = null,
+        blockedTopics: List<String>? = null,
+        seniorityLevel: String? = null,
+        notifyEnabled: Boolean? = null,
+        quietHourStart: Int? = null,
+        quietHourEnd: Int? = null
+    ) {
+        val request = com.resumenews.app.data.remote.dto.PreferencesRequest(
+            preferredTopics, blockedTopics, seniorityLevel, notifyEnabled, quietHourStart, quietHourEnd
+        )
+        api.updatePreferences(deviceId, request)
+    }
+
     private fun ProfileDto.toEntity() = UserProfileEntity(
         deviceId = deviceId,
         name = name,

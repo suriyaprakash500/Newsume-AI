@@ -50,6 +50,17 @@ interface ApiService {
         @Path("device_id") deviceId: String,
     ): com.resumenews.app.data.remote.dto.SkillGapResponse
 
+    @GET("preferences/{device_id}")
+    suspend fun getPreferences(
+        @Path("device_id") deviceId: String,
+    ): com.resumenews.app.data.remote.dto.PreferencesDto
+
+    @PUT("preferences/{device_id}")
+    suspend fun updatePreferences(
+        @Path("device_id") deviceId: String,
+        @Body body: com.resumenews.app.data.remote.dto.PreferencesRequest
+    ): Map<String, Any>
+
     @GET("news/{device_id}")
     suspend fun getNewsUnread(
         @Path("device_id") deviceId: String,

@@ -36,3 +36,21 @@ data class SkillGapResponse(
     val status: String = "",
     val report: SkillGapReport = SkillGapReport()
 )
+
+data class PreferencesDto(
+    @SerializedName("preferred_topics") val preferredTopics: List<String> = emptyList(),
+    @SerializedName("blocked_topics") val blockedTopics: List<String> = emptyList(),
+    @SerializedName("seniority_level") val seniorityLevel: String = "mid",
+    @SerializedName("notify_enabled") val notifyEnabled: Boolean = true,
+    @SerializedName("quiet_hour_start") val quietHourStart: Int = 22,
+    @SerializedName("quiet_hour_end") val quietHourEnd: Int = 7
+)
+
+data class PreferencesRequest(
+    @SerializedName("preferred_topics") val preferredTopics: List<String>? = null,
+    @SerializedName("blocked_topics") val blockedTopics: List<String>? = null,
+    @SerializedName("seniority_level") val seniorityLevel: String? = null,
+    @SerializedName("notify_enabled") val notifyEnabled: Boolean? = null,
+    @SerializedName("quiet_hour_start") val quietHourStart: Int? = null,
+    @SerializedName("quiet_hour_end") val quietHourEnd: Int? = null
+)

@@ -24,7 +24,9 @@ data class ResumeUiState(
     val lastUploadedProfile: ProfileDto? = null,
     val isDeleting: Boolean = false,
     val skillGapReport: com.resumenews.app.data.remote.dto.SkillGapReport? = null,
-    val isLoadingSkillGap: Boolean = false
+    val isLoadingSkillGap: Boolean = false,
+    val preferences: com.resumenews.app.data.remote.dto.PreferencesDto? = null,
+    val isSavingPrefs: Boolean = false
 )
 
 class ResumeViewModel(application: Application) : AndroidViewModel(application) {
@@ -114,6 +116,42 @@ class ResumeViewModel(application: Application) : AndroidViewModel(application) 
                 _uiState.value = _uiState.value.copy(
                     isLoadingSkillGap = false,
                     error = e.message ?: "Failed to fetch skill gap report"
+                )
+            }
+        }
+    }
+
+    fun fetchPreferences() {
+        viewModelScope.launch {
+            try {
+                val prefs = repo.getPreferences(deviceId)
+                _uiState.value = _uiState.value.copy(preferences = prefs)
+            } catch (e: Exception) {
+                // Ignore initial fetch errors
+            }
+        }
+    }
+
+    fun savePreferences(
+        preferredTopics: List<String>? = null,
+        blockedTopics: List<String>? = null,
+        seniorityLevel: String? = null,
+        notifyEnabled: Boolean? = null,
+        quietHourStart: Int? = null,
+        quietHourEnd: Int? = null
+    ) {
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(isSavingPrefs = true, saveSuccess = false, error = null)
+            try {
+                repo.updatePreferences(
+                    deviceId, preferredTopics, blockedTopics, seniorityLevel, notifyEnabled, quietHourStart, quietHourEnd
+                )
+                _uiState.value = _uiState.value.copy(isSavingPrefs = false, saveSuccess = true)
+                fetchPreferences() // Refresh
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(
+                    isSavingPrefs = false,
+                    error = e.message ?: "Failed to save preferences"
                 )
             }
         }

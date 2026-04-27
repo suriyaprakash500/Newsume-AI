@@ -55,6 +55,10 @@ fun ProfileScreen(viewModel: ResumeViewModel = viewModel()) {
     val uiState by viewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
 
+    LaunchedEffect(Unit) {
+        viewModel.fetchPreferences()
+    }
+
     LaunchedEffect(uiState.saveSuccess) {
         if (uiState.saveSuccess) {
             snackbarHostState.showSnackbar("Profile saved!")
@@ -151,6 +155,18 @@ fun ProfileScreen(viewModel: ResumeViewModel = viewModel()) {
                     Spacer(modifier = Modifier.width(8.dp))
                 }
                 Text("Save Profile")
+            }
+
+            Spacer(modifier = Modifier.height(32.dp))
+            
+            uiState.preferences?.let { prefs ->
+                PreferencesSection(
+                    prefs = prefs,
+                    isSaving = uiState.isSavingPrefs,
+                    onSave = { pTopics, bTopics, seniority, notify, start, end ->
+                        viewModel.savePreferences(pTopics, bTopics, seniority, notify, start, end)
+                    }
+                )
             }
 
             Spacer(modifier = Modifier.height(32.dp))
@@ -395,6 +411,100 @@ private fun SkillGapSection(
                 ) {
                     Text("Refresh Report")
                 }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun PreferencesSection(
+    prefs: com.resumenews.app.data.remote.dto.PreferencesDto,
+    isSaving: Boolean,
+    onSave: (List<String>, List<String>, String, Boolean, Int, Int) -> Unit
+) {
+    var seniority by remember(prefs.seniorityLevel) { mutableStateOf(prefs.seniorityLevel) }
+    var notifyEnabled by remember(prefs.notifyEnabled) { mutableStateOf(prefs.notifyEnabled) }
+    var quietStart by remember(prefs.quietHourStart) { mutableStateOf(prefs.quietHourStart.toString()) }
+    var quietEnd by remember(prefs.quietHourEnd) { mutableStateOf(prefs.quietHourEnd.toString()) }
+    
+    val pTopics = remember(prefs.preferredTopics) { mutableStateListOf(*prefs.preferredTopics.toTypedArray()) }
+    val bTopics = remember(prefs.blockedTopics) { mutableStateListOf(*prefs.blockedTopics.toTypedArray()) }
+
+    Text(
+        "Personalization & Preferences",
+        style = MaterialTheme.typography.headlineSmall,
+        modifier = Modifier.padding(vertical = 8.dp)
+    )
+
+    EditableProfileSection("Preferred Topics", pTopics)
+    EditableProfileSection("Blocked Topics", bTopics)
+
+    Card(
+        modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text("General Settings", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary)
+            Spacer(modifier = Modifier.height(16.dp))
+
+            OutlinedTextField(
+                value = seniority,
+                onValueChange = { seniority = it },
+                label = { Text("Seniority Level (student/junior/mid/senior/lead)") },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true
+            )
+            
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
+                Text("Enable Daily Notifications")
+                androidx.compose.material3.Switch(
+                    checked = notifyEnabled,
+                    onCheckedChange = { notifyEnabled = it }
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+            Text("Quiet Hours (24h format)", style = MaterialTheme.typography.bodySmall)
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {
+                OutlinedTextField(
+                    value = quietStart,
+                    onValueChange = { quietStart = it },
+                    label = { Text("Start") },
+                    modifier = Modifier.weight(1f),
+                    singleLine = true
+                )
+                OutlinedTextField(
+                    value = quietEnd,
+                    onValueChange = { quietEnd = it },
+                    label = { Text("End") },
+                    modifier = Modifier.weight(1f),
+                    singleLine = true
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+            Button(
+                onClick = {
+                    onSave(
+                        pTopics.toList(),
+                        bTopics.toList(),
+                        seniority,
+                        notifyEnabled,
+                        quietStart.toIntOrNull() ?: 22,
+                        quietEnd.toIntOrNull() ?: 7
+                    )
+                },
+                enabled = !isSaving,
+                modifier = Modifier.align(Alignment.End)
+            ) {
+                if (isSaving) {
+                    CircularProgressIndicator(modifier = Modifier.size(18.dp), strokeWidth = 2.dp, color = MaterialTheme.colorScheme.onPrimary)
+                    Spacer(modifier = Modifier.width(8.dp))
+                }
+                Text("Save Preferences")
             }
         }
     }
