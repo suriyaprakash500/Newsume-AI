@@ -59,6 +59,11 @@ class ResumeRepository(context: Context) {
         dao.upsert(response.profile.toEntity())
     }
 
+    suspend fun deleteProfile(context: Context, deviceId: String) {
+        api.deleteProfile(deviceId)
+        AppDatabase.getInstance(context).clearAllTables()
+    }
+
     private fun ProfileDto.toEntity() = UserProfileEntity(
         deviceId = deviceId,
         name = name,

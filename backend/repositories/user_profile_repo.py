@@ -34,3 +34,9 @@ def update_fcm_token(db: Session, device_id: str, token: str) -> UserProfile | N
         db.commit()
         db.refresh(profile)
     return profile
+
+
+def delete_profile(db: Session, device_id: str) -> bool:
+    deleted = db.query(UserProfile).filter(UserProfile.device_id == device_id).delete()
+    db.commit()
+    return deleted > 0

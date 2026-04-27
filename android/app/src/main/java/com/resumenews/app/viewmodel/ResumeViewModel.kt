@@ -21,7 +21,8 @@ data class ResumeUiState(
     val isSaving: Boolean = false,
     val saveSuccess: Boolean = false,
     val error: String? = null,
-    val lastUploadedProfile: ProfileDto? = null
+    val lastUploadedProfile: ProfileDto? = null,
+    val isDeleting: Boolean = false
 )
 
 class ResumeViewModel(application: Application) : AndroidViewModel(application) {
@@ -78,6 +79,21 @@ class ResumeViewModel(application: Application) : AndroidViewModel(application) 
                 _uiState.value = _uiState.value.copy(
                     isSaving = false,
                     error = e.message ?: "Save failed"
+                )
+            }
+        }
+    }
+
+    fun deleteProfile(context: android.content.Context) {
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(isDeleting = true, error = null)
+            try {
+                repo.deleteProfile(context, deviceId)
+                _uiState.value = ResumeUiState() // Reset entirely
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(
+                    isDeleting = false,
+                    error = e.message ?: "Delete failed"
                 )
             }
         }

@@ -152,6 +152,28 @@ fun ProfileScreen(viewModel: ResumeViewModel = viewModel()) {
                 Text("Save Profile")
             }
 
+            Spacer(modifier = Modifier.height(16.dp))
+
+            val context = androidx.compose.ui.platform.LocalContext.current
+            Button(
+                onClick = { viewModel.deleteProfile(context) },
+                enabled = !uiState.isDeleting,
+                modifier = Modifier.fillMaxWidth(),
+                colors = androidx.compose.material3.ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.error
+                )
+            ) {
+                if (uiState.isDeleting) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(18.dp),
+                        strokeWidth = 2.dp,
+                        color = MaterialTheme.colorScheme.onError,
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                }
+                Text("Delete Profile & Reset Data")
+            }
+
             Spacer(modifier = Modifier.height(32.dp))
         }
     }

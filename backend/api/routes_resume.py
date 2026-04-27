@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 
 from database import get_db
 from services.resume_parser import process_resume
-from repositories.user_profile_repo import get_profile_by_device, update_fcm_token, upsert_profile
+from repositories.user_profile_repo import get_profile_by_device, update_fcm_token, upsert_profile, delete_profile
 from repositories.news_repo import mark_all_unread_as_read
 
 router = APIRouter(prefix="/resume", tags=["Resume"])
@@ -102,4 +102,12 @@ def register_fcm_token(
     profile = update_fcm_token(db, device_id, fcm_token)
     if not profile:
         raise HTTPException(status_code=404, detail="Profile not found. Upload resume first.")
+    return {"status": "success"}
+
+
+@router.delete("/profile/{device_id}")
+def delete_profile_endpoint(device_id: str, db: Session = Depends(get_db)):
+    success = delete_profile(db, device_id)
+    if not success:
+        raise HTTPException(status_code=404, detail="Profile not found.")
     return {"status": "success"}

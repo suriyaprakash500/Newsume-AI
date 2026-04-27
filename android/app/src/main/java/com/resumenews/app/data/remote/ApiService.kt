@@ -40,6 +40,11 @@ interface ApiService {
         @Body body: EditProfileBody,
     ): UploadResponse
 
+    @DELETE("resume/profile/{device_id}")
+    suspend fun deleteProfile(
+        @Path("device_id") deviceId: String,
+    ): Map<String, Any>
+
     @GET("news/{device_id}")
     suspend fun getNewsUnread(
         @Path("device_id") deviceId: String,
