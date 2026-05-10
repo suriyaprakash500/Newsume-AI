@@ -58,7 +58,7 @@ def get_articles_for_device(
     return (
         db.query(NewsArticle)
         .filter(NewsArticle.device_id == device_id)
-        .order_by(NewsArticle.relevance_score.desc(), NewsArticle.fetched_at.desc())
+        .order_by(NewsArticle.fetched_at.desc())
         .offset(offset)
         .limit(limit)
         .all()
